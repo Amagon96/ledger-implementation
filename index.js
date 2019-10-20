@@ -8,25 +8,35 @@ function cli(){
 
   if (cmd === 'b' || cmd === 'bal') {
     cmd = 'balance'
-  }
-
-  if (cmd === 'p') {
+  } else if (cmd === 'p') {
     cmd = 'print'
-  }
-
-  if (cmd === 'r' || cmd === 'reg') {
+  } else if (cmd === 'r' || cmd === 'reg') {
     cmd = 'register'
-  }
-
-  if (args.version || args.v) {
+  } else if (args.version || args.v) {
     cmd = 'version'
   }
 
-  if (args.help || args.h) {
-    cmd = 'help'
-  }
+  switch (cmd) {
+    case 'balance':
+      cmdsController.balance(args);
+      break;
 
-  console.log(cmd);
+    case 'print':
+      cmdsController.print(args);
+      break;
+
+    case 'register':
+      cmdsController.register(args);
+      break;
+
+    case 'version':
+      cmdsController.version(args);
+      break;
+
+    default:
+      cmdsController.help(args);
+      break;
+  }
 }
 
 module.exports = {
