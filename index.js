@@ -1,5 +1,5 @@
 const minimist = require('minimist');
-const cmdsController = require('/controllers/cmds');
+const cmdsController = require('/controllers/cmdController');
 
 function cli(){
   const args = minimist(process.argv.slice(2));
