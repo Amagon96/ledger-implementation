@@ -1,6 +1,11 @@
-function balance(){
+const Parser = require('../parser')
+const fs = require('fs');
+const chalk = require('chalk');
 
+function balance(args){
+    console.log("balanced :D");
 }
+
 function print(){
 
 }
