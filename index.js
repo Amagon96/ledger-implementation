@@ -13,8 +13,6 @@ if (cmd === "b" || cmd === "bal" || cmd === "balance") {
   cmd = "register";
 } else if (args.version || args.v) {
   cmd = "version";
-}else{
-  cmd = "help";
 }
 
 switch (cmd) {
