@@ -11,9 +11,10 @@ let i = 1;
 
 function balanceCommand(args){
     const file = args._[1];
-    const sort = args._[2];
 
     if(typeof file === "undefined"){
+        console.log("Please provide a valid file name");
+        return;
         files.map((element) => {
             readFile(element, "balance");
         });
@@ -27,6 +28,8 @@ function printCommand(args){
     const file = args._[1];
 
     if(!file){
+        console.log("Please provide a valid file name");
+        return;
         files.map((element) => {readFile(element, "print")});
     }else{
         i = 5;
@@ -37,7 +40,11 @@ function registerCommand(args){
     const file = args._[1];
 
     if(!file){
-        files.map((element) => {readFile(element, "register")});
+        console.log("Please provide a valid file name");
+        return;
+        files.map((element) => {
+            readFile(element, "register");
+        });
     }else{
         i = 5;
         readFile(file, "register");
@@ -45,7 +52,7 @@ function registerCommand(args){
 }
 
 function versionCommand(){
-
+    console.log("v 1.0.0");
 }
 
 function readFile(file, command) {

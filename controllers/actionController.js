@@ -104,5 +104,4 @@ module.exports = {
     register,
     version,
     print,
-    help
 };
