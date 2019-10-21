@@ -1,46 +1,83 @@
 const sprintf =require("sprintf-js").sprintf;
-const ACCOUNT_CURRENCY = new RegExp('[a-zA-z]{3}');
-const ACCOUNT_AMOUNT = new RegExp('/[\\-.|\\d]/');
-const SUPERIOR_ACCOUNT = new RegExp('/^\\w+/');
 
-let balances = {};
-let transactions = {};
-let transactionSum = {};
 let amount = 0.0;
 let description = "";
 let currency = "";
-let movements = [];
-
-/*
-USD_CURRENCY         = 'USD'.freeze
-TWO_DECIMALS         = '%.2f'.freeze
-EMPTY_SPACE          = ' '.freeze
- */
+let date = "";
+let groups = {};
+let keys = [];
 
 /*
  * Do the balance of a file.
  */
 function balance(transactions){
-
-    console.log(sprintf("%5j", transactions));
-
+    groups = {};
+    let balanceObject = {};
     transactions.map((transaction) =>{
-        movements = transaction.accounts;
+        let movements = transaction.accounts;
         movements.map((movement) => {
-           amount = movement.amount;
-           description = movement.description;
-           currency = movement.currency;
+            amount = movement.amount;
+            description = movement.description;
+            currency = movement.currency;
 
-            if (balances.hasOwnProperty(description)) {
-                balances[description][0] += amount;
+            if (balanceObject.hasOwnProperty(description)) {
+                balanceObject[description][0] += amount;
             } else {
-                balances[description] += [amount, currency];
+                balanceObject[description] = [amount, currency];
             }
         });
     });
+
+    keys = Object.keys(balanceObject);
+
+    for (let key in keys) {
+        currency = balanceObject[keys[key]][1];
+        if (groups.hasOwnProperty(currency)){
+            groups[currency] += balanceObject[keys[key]][0]
+        } else {
+            groups[currency] = balanceObject[keys[key]][0]
+        }
+    }
+
+    for (let key in keys){
+        console.log(sprintf("%20s %5s",  `${balanceObject[keys[key]][1] } ${ balanceObject[keys[key]][0]}`, keys[key]));
+    }
+    console.log('--------------------')
+
+    for (let key in groups) {
+        if (groups.hasOwnProperty(key)) {
+            console.log(sprintf("%20s %5s",key, groups[key]));
+        }
+    }
 }
 
-function register(file){
+function register(transactions, sort){
+    groups = {};
+    let registerObject = [];
+    transactions.map((transaction) => {
+        date = transaction.date;
+        date = date.replace(/\//g,'-');
+        description = transaction.description;
+        console.log(`${date} ${description}`);
+        let movements = transaction.accounts;
+        movements.map((movement) => {
+            amount = movement.amount;
+            currency = movement.currency;
+            description = movement.description;
+
+            if(groups.hasOwnProperty(currency)){
+                groups.currency += amount;
+            } else {
+                groups.currency = amount;
+            }
+
+            console.log(sprintf("%50s %10s %1.2f %20s %1.2f", description, currency, amount, currency, groups.currency));
+        });
+
+        for (let group in groups) {
+            console.log(sprintf("%88s %1.2f", group,  groups[group]));
+        }
+    });
 
 }
 
@@ -48,7 +85,13 @@ function version(file) {
 
 }
 
-function print(file){
+function print(transactions, sort){
+    transactions.map((transaction) => {
+        console.log(`${transaction.date} ${transaction.description}`);
+        transaction.accounts.map((account) => {
+            console.log(sprintf("%70s %30.2f", account.description, account.amount));
+        });
+    });
 
 }
 

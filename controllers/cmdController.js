@@ -11,28 +11,44 @@ let i = 1;
 
 function balanceCommand(args){
     const file = args._[1];
-    //const sort = args.sort ? args.sort : "";
+    const sort = args._[2];
 
-    if(!file){
-        files.map((element) => {readFile(element)});
+    if(typeof file === "undefined"){
+        files.map((element) => {
+            readFile(element, "balance");
+        });
     }else{
         i = 5;
-        readFile(file);
+        readFile(file, "balance");
     }
 }
 
-function printCommand(){
+function printCommand(args){
+    const file = args._[1];
 
+    if(!file){
+        files.map((element) => {readFile(element, "print")});
+    }else{
+        i = 5;
+        readFile(file, "print");
+    }
 }
-function registerCommand(){
+function registerCommand(args){
+    const file = args._[1];
 
+    if(!file){
+        files.map((element) => {readFile(element, "register")});
+    }else{
+        i = 5;
+        readFile(file, "register");
+    }
 }
 
 function versionCommand(){
 
 }
 
-function readFile(file) {
+function readFile(file, command) {
     if(!file.includes(".ledger")){
         file += ".ledger";
     }
@@ -42,6 +58,8 @@ function readFile(file) {
     }
 
     let fileLength = 0;
+    let lines = "";
+    let parsedFile = {};
 
     fileSystem.readFile(file, 'utf8', (err, contents) =>{
 
@@ -53,10 +71,22 @@ function readFile(file) {
         }
 
         if(fileLength > 0){
-            let lines = contents.split('\n');
-            let parsedFile = parser.parser(lines, fileLength);
+            lines = contents.split('\n');
+            parsedFile = parser.parser(lines, fileLength);
             if(i === 5){
-                actionController.balance(parsedFile);
+                switch (command) {
+                    case "balance" :
+                        actionController.balance(parsedFile);
+                        break;
+                    case "register" :
+                        actionController.register(parsedFile);
+                        break;
+                    case "print" :
+                        actionController.print(parsedFile);
+                        break;
+                    default :
+                        console.log(`${cdm} is not a valid command`);
+                }
             }
             i++;
         }
